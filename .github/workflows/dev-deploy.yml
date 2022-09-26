@@ -49,8 +49,8 @@ jobs:
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v14
         with:
-          aws_access_key: AKIAWFSNSVO76NELLZQS # github secrets로 등록한 값 사용
-          aws_secret_key: +GCwXTTvku7LP6/9sLNq34KQXsXT/xyVQfIcO9Oi # github secrets로 등록한 값 사용
+          aws_access_key: 'AKIAWFSNSVO76NELLZQS' # github secrets로 등록한 값 사용
+          aws_secret_key: '+GCwXTTvku7LP6/9sLNq34KQXsXT/xyVQfIcO9Oi' # github secrets로 등록한 값 사용
           application-name: dev-sesame # EB application 이름
           environment_name: dev-sesame # EB environment 이름
           version_label: Github Action-${{steps.current-time.outputs.formattedTime}} # 배포 버전은 타임스탬프를 이용하여 구분
