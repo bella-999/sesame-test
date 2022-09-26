@@ -10,7 +10,7 @@ env:
 
 jobs:
   deploy:
-    name: DEPLOY
+    name: dev-sesame-deploy
     runs-on: ubuntu-18.04
 
     steps:
