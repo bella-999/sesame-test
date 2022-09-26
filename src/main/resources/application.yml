@@ -1,0 +1,58 @@
+spring.profiles.active: local
+spring.application.name: sesame-test
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://127.0.0.1:13306/sesame?characterEncoding=UTF-8
+    username: admin
+    password: Sesame!6700
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+    properties:
+      hibernate.format_sql: true
+
+logging:
+  level:
+    org.hibernate.sql: debug
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://dev-sesame-rds.cdvey5izwfml.ap-northeast-2.rds.amazonaws.com/sesame?characterEncoding=UTF-8
+    username: admin
+    password: Sesame!6700
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+    properties:
+      hibernate.format_sql: true
+
+logging:
+  level:
+    org.hibernate.sql: debug
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
