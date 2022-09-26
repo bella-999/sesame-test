@@ -19,5 +19,4 @@ else
 fi
 
 echo "> $JAR_PATH 배포"
-nohup java -jar -Dspring.profiles.active=dev \
-$JAR_PATH > /dev-sesame-cd-group/null 2> /dev-sesame-cd-group/null < /dev-sesame-cd-group/null &
+nohup java -jar -Dspring.profiles.active=dev $JAR_PATH > $REPOSITORY/nohub.out 2>&1 &
