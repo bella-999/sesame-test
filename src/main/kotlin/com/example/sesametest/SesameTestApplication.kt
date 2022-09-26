@@ -16,6 +16,6 @@ fun main(args: Array<String>) {
 class testApi() {
     @GetMapping
     fun test() : String{
-        return "hello world"
+        return "hello world2"
     }
 }
