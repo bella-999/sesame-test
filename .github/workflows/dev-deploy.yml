@@ -1,59 +1,48 @@
-name: dev-sesame
-
 on:
   push:
     branches:
-      - main # (1) 실습하시는분들은 master로 하시면 됩니다. (저는 별도 브랜치로 지정)
-  workflow_dispatch: # (2) 수동 실행
+      - main
+
+name: dev-sesame
+
+env:
+  PROJECT_NAME: sesame
 
 jobs:
-  build:
-    runs-on: ubuntu-latest # (3)
+  deploy:
+    name: DEPLOY
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2 # (4)
+        uses: actions/checkout@v2
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v1 # (5)
+        uses: actions/setup-java@v1
         with:
           java-version: 11
 
       - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew # (6)
+        run: chmod +x gradlew
         shell: bash
-
 
       - name: Build with Gradle
-        run: ./gradlew clean build # (7)
+        run: ./gradlew build
         shell: bash
 
-      - name: Get current time
-        uses: 1466587594/get-current-time@v2
-        id: current-time
-        with:
-          format: YYYY-MM-DDTHH-mm-ss # 다른 포맷으로 변경 가능(MomentJS format syntax)
-          utcOffset: "+09:00" # 한국 시간에 맞추기 위함
+      - name: Make zip file
+        run: zip -qq -r ./$GITHUB_SHA.zip .
+        shell: bash
 
-          # grandle build를 통해 만들어진 jar를 beanstalk에 배포하기 위한 zip 파일로 만드는 것
-      - name: Generate deployment package
-        run: |
-          mkdir -p deploy
-          cp build/libs/*.jar deploy/application.jar # 빌드 완료 시 jar 파일명을 application.jar로 변경
-          cp Procfile deploy/Procfile
-          cp -r .ebextensions deploy/.ebextensions
-          cp -r .platform deploy/.platform
-          cd deploy && zip -r deploy.zip . # Procfile, .ebextensions, .platform 포함하여 zip 생성
-
-        # Beanstalk Deploy 플러그인 사용
-      - name: Beanstalk Deploy
-        uses: einaregilsson/beanstalk-deploy@v14
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws_access_key: "AKIAWFSNSVO76NELLZQS" # github secrets로 등록한 값 사용
-          aws_secret_key: "+GCwXTTvku7LP6/9sLNq34KQXsXT/xyVQfIcO9Oi"
-          application_name: "dev-sesame"
-          environment_name: "dev-sesame" # EB environment 이름
-          version_label: Github Action-${{steps.current-time.outputs.formattedTime}} # 배포 버전은 타임스탬프를 이용하여 구분
-          region: ap-northeast-2
-          deployment_package: deploy/deploy.zip
-          wait_for_environment_recovery: 180
+          aws-access-key-id: AKIAWFSNSVO7WVJZHZXM
+          aws-secret-access-key: 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
+          aws-region: ap-northeast-2
+
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://isntyet-deploy/$PROJECT_NAME/$GITHUB_SHA.zip
+
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name dev-sesame --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name dev-sesame-cd-group --s3-location bucket=isntyet-deploy,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
