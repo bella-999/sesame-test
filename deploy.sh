@@ -21,4 +21,4 @@ fi
 chmod +x $JAR_PATH
 
 echo "> $JAR_PATH 배포"
-nohup java -jar -Dspring.profiles.active=dev $JAR_PATH > $REPOSITORY/nohub.out 2>&1 &
+nohup java -jar -Dspring.profiles.active=dev $JAR_PATH > /home/ec2-user/nohub.out 2>&1 &
