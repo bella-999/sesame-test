@@ -11,8 +11,8 @@ plugins {
 val jar: Jar by tasks
 val bootJar: BootJar by tasks
 
-bootJar.enabled = false
-jar.enabled = true
+bootJar.enabled = true
+jar.enabled = false
 
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
