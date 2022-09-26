@@ -7,7 +7,6 @@ files:
 permissions:
   - object: /opt/dev-sesame/
     owner: ec2-user
-    group: ubuntu
     mode: 755
 hooks:
   AfterInstall:
